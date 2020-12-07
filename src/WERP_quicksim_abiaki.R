@@ -14,7 +14,7 @@ rm(list=ls(all=T));cat("\014");dev.off()
 # Data Wrangling
 library(AnalystHelper);
 library(zoo)
-
+library(plyr)
 
 # -------------------------------------------------------------------------
 set.seed(123)
@@ -130,3 +130,7 @@ mean(QBEL.pass$N.val)
 
 plot(N.val~MC.iter,QBEL.pass,ylim=c(0,100),type="b")
 
+test=ddply(ann.conc.MC,"sim.time",summarise,min.val=min(sim,na.rm=T),max.val=max(sim,na.rm=T),mean.val=mean(sim,na.rm=T))
+
+plot(mean.val~sim.time,test,ylim=c(0,30))
+with(test,shaded.range(sim.time,min.val,max.val,"grey",lty=1))
