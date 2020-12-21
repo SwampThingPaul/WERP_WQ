@@ -106,7 +106,7 @@ mtext( side=2,line=2,"TP FWM (\u03BCg L\u207B\u00B9)")
 
 ## Monte Carlo type analysis
 
-val=15
+val=19
 uncert=val*0.3
 
 iter=100
@@ -125,7 +125,8 @@ ann.conc.MC$LT.exceed=with(ann.conc.MC,ifelse(sim<13,1,0))
 ann.conc.MC$LT.exceed5=with(ann.conc.MC,ave(LT.exceed,MC.iter,FUN=function(x)c(rep(NA,4),rollsum(x,5))))
 ann.conc.MC$QBEL.pass=with(ann.conc.MC,ifelse(ann.exceed>0&LT.exceed5>=3,1,0))
 
-QBEL.pass=ddply(ann.conc.MC,"MC.iter",summarise,N.val=sum(QBEL.pass,na.rm=T))
+# QBEL.pass=ddply(ann.conc.MC,"MC.iter",summarise,N.val=sum(QBEL.pass,na.rm=T))
+QBEL.pass=ddply(ann.conc.MC,"MC.iter",summarise,N.val=sum(LT.exceed,na.rm=T))
 mean(QBEL.pass$N.val)
 
 plot(N.val~MC.iter,QBEL.pass,ylim=c(0,100),type="b")
