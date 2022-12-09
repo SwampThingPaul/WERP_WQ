@@ -94,7 +94,7 @@ bsplus::bs_button(
     button_type = "primary",
     button_size = "small") %>%
     htmltools::a(
-      href = "https://sccf-tech.github.io/WERP_WQ/slides/20230117_WERP_Listening.pdf"
+      href = "https://swampthingecology.org/WERP_WQ/slides/20230117_WERP_Listening.pdf"
       )
 ```
 ]
@@ -147,7 +147,7 @@ Therefore, some level of treatment is needed to improve water quality in the Win
 
 .small[
 .footnote[
-<sup>1</sup> FDEP, 2017, Numeric Interpretation of Narrative Standards for the L-28 Interceptor Canal and Big Cypress National Preserve. Tallahassee, FL. [LINK to Document](https://sccf-tech.github.io/WERP_WQ/slides/FDEP WERP WQ WhitePaper_FINAL 071117.pdf)
+<sup>1</sup> FDEP, 2017, Numeric Interpretation of Narrative Standards for the L-28 Interceptor Canal and Big Cypress National Preserve. Tallahassee, FL. [LINK to Document](https://swampthingecology.org/WERP_WQ/slides/FDEP WERP WQ WhitePaper_FINAL 071117.pdf)
 ]
 ]
 
