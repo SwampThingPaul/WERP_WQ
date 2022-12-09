@@ -33,19 +33,19 @@ data.path=paths[3]
 GIS.path="C:/Julian_LaCie/_GISData"
 
 # Helper variables
-nad83.pro=CRS("+init=epsg:4269")
-utm17=CRS("+proj=utm +zone=17 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+nad83.pro=CRS(SRS_string = "EPSG:4269")
+utm17=CRS(SRS_string ="EPSG:26917")
 
 
 # -------------------------------------------------------------------------
 ## GIS Data 
 # personal geodatabase 
 ogrListLayers(paste0(GIS.path,"/SFER_GIS_Geodatabase.gdb"))
-BCNP=spTransform(readOGR(paste0(GIS.path,"/SFER_GIS_Geodatabase.gdb"),"BCNP"),utm17)
-canals=spTransform(readOGR(paste0(GIS.path,"/SFER_GIS_Geodatabase.gdb"),"SFWMD_Canals"),utm17)
+BCNP=spTransform(readOGR(paste0(GIS.path,"/SFER_GIS_Geodatabase.gdb"),"BCNP"),wkt(utm17))
+canals=spTransform(readOGR(paste0(GIS.path,"/SFER_GIS_Geodatabase.gdb"),"SFWMD_Canals"),wkt(utm17))
 
 # https://geo-sfwmd.hub.arcgis.com/datasets/environmental-monitoring-stations
-wmd.mon=spTransform(readOGR(paste0(GIS.path,"/SFWMD_Monitoring_20200221"),"Environmental_Monitoring_Stations"),utm17)
+wmd.mon=spTransform(readOGR(paste0(GIS.path,"/SFWMD_Monitoring_20200221"),"Environmental_Monitoring_Stations"),wkt(utm17))
 wmd.mon=subset(wmd.mon,ACTIVITY_S=="Surface Water Grab")
 
 # library(tmap)
@@ -242,6 +242,8 @@ Tp.90=abs(qt(0.10,Df));Tp.90
 LTL.95=m+s*(Tp.95/sqrt(N.val));LTL.95
 LTL.90=m+s*(Tp.90/sqrt(N.val));LTL.90
 
+LTL.TP=LTL.95
+
 gm=exp(mean(subset(TP.DO,Station.ID%in%der.sites&Use.Final==1)$Ln.Geomean,na.rm=T));gm
 ybar=mean(subset(TP.DO,Station.ID%in%der.sites&Use.Final==1)$Ln.Geomean,na.rm=T);ybar
 var=var(subset(TP.DO,Station.ID%in%der.sites&Use.Final==1)$Ln.Geomean,na.rm=T);var
@@ -250,7 +252,7 @@ NS=N.obs(ddply(subset(TP.DO,Station.ID%in%der.sites&Use.Final==1),"Station.ID",s
 Df=NYR-NS;Df
 Tp.95=abs(qt(0.05,Df));Tp.95
 AL.95=exp(ybar+Tp.95*sqrt(var+(var/NYR)));AL.95
-
+AL.TP=AL.95
 ##TN 
 AnnualAvg.TN=ddply(subset(TN.DO,Station.ID%in%der.sites&Use.Final==1),c("Station.ID","WY"),summarise,Mean=mean(Geomean,na.rm=T),SD=sd(Geomean,na.rm=T))
 #write.csv(subset(TN.DO,Station.ID%in%der.sites&Use.Final==1),paste(export.path,"/BCNP_AGM_TN_screened_forderivation2.csv",sep=""),row.names=F)
