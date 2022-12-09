@@ -109,7 +109,7 @@ name: WFEEDERWQ
 knitr::include_graphics("./plots/WERP_TP_Annual.png")
 ```
 
-* Since 2008 WWEIR AGM Concentrations have been significantly increasing ($\tau$ 0.41; $\rho$-value<0.05).
+* Since 2008 WWEIR AGM Concentrations have been significantly increasing ( $\tau$=0.41; $\rho$-value<0.05).
 * Based on limited data Wingate Canal Concentrations < Lard can Canal.
 * Lard Can AGM TP concentrations increase from south to north (based on limited data).
 
