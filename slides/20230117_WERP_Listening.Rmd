@@ -258,7 +258,9 @@ q = HLR (m/d)
 
 k-values within range of current STAs - [summary](#STA_k)
 
-Assumes plug-and-flow conditions applicable to long-linear filter marsh. Some refinement may be needed.
+Average Q based on difference between WECB and ALTHR ([summary](#averageQ)) and a 60:40 split between Lardcan and Wingate mill canals
+
+
 
 ]
 .pull-right[
@@ -267,6 +269,10 @@ Assumes plug-and-flow conditions applicable to long-linear filter marsh. Some re
 knitr::include_graphics("./plots/WERP_FM_PnF.png")
 ```
 ]
+
+???
+Assumes plug-and-flow conditions applicable to long-linear filter marsh. Some refinement may be needed.
+
 ---
 name: Treat2
 
@@ -403,17 +409,30 @@ class: inverse
 <!-- Blank Slide between presentation and extra slides -->
 
 ---
+name: averageQ
+
+```{r,out.width="80%",fig.align="center",fig.cap="Average annual discharge volume at WestWeir" }
+
+knitr::include_graphics("./plots/AvgFloodControl.png")
+```
+
+---
 name: area_sens
 ```{r,out.width="80%",fig.align="center",fig.cap="Range of area needed to treat inflow across various k rates for Lardcan canal filter marsh." }
 
 knitr::include_graphics("./plots/WERP_FM_LC_areaPnF.png")
 ```
 
+---
+name: vol_sens
+
+```{r,out.width="80%",fig.align="center",fig.cap="Outflow TP concentration relative inflow volume across the various k rates for Lardcan canal filter marsh." }
+
+knitr::include_graphics("./plots/WERP_FM_LC_Q_Co.png")
+```
 
 ---
 name: STA_k
-
-
 
 ```{r,out.width="100%",fig.align="center",fig.cap="Calculated mean (± standard error) annual total phosphorus areal removal rates for Florida water year 2014 to 2021 (May 2013 – April 2021) observed in the Everglades Stormwater Treatment Areas and Northern Estuaries Protection Program Stormwater Treatment Areas. The horizontal solid line represents the mean areal removal rate across all STAs (12.2 m/yr)." }
 
