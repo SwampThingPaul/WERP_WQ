@@ -168,10 +168,6 @@ wq.dat.screenTP$NScreen=with(wq.dat.screenTP,ifelse(NTotal>=4,1,0));
 wq.dat.screenTP$TP.UseData=with(wq.dat.screenTP,ifelse((SeasonScreen+NScreen)==2,"Yes","No"));
 head(wq.dat.screenTP)
 
-
-
-
-
 screened.dat=merge(wq.dat.xtab,wq.dat.screenTP[,c("Station.ID","WY","TP.UseData")],by=c("Station.ID","WY"),all.x=T)
 TP.AGM=ddply(screened.dat,c("Station.ID","WY","TP.UseData"),summarise,N=length(TP.ugL),Geomean=exp(mean(log(TP.ugL),na.rm=T)),N=N.obs(TP.ugL),sd=sd(TP.ugL,na.rm=T),GM.SE=Geomean*(sd(log(TP.ugL),na.rm=T)/sqrt(N-1)));
 TP.AGM$GM.plot=with(TP.AGM,ifelse(TP.UseData=="Yes",Geomean,NA))
@@ -246,4 +242,158 @@ legend("center",legend=sites.val,
        pt.bg=cols,pch=21,lty=0,lwd=0.1,col="black",
        pt.cex=1.5,ncol=1,cex=1,bty="n",y.intersp=1,x.intersp=0.75,xpd=NA,xjust=0.5,yjust=0.5,
        title.adj=0,title = "Monitoring Locations")
+dev.off()
+
+
+
+
+# Plug and Flow -----------------------------------------------------------
+m3.to.acft=function(x)x*0.000810714
+m2.to.ac=function(x)x*0.000247105
+
+wweirQ=data.frame(Alt = c("ALTHR", "WECB", "WFWO"), 
+                  mean.TFlow.m3d = c(682603.580515723,56183301.6826572, 47762732.276524))
+
+Q.treat=subset(wweirQ,Alt=="WECB")$mean.TFlow.m3d-subset(wweirQ,Alt=="WFWO")$mean.TFlow.m3d
+Q.treat=(Q.treat)/365
+
+# (Q.treat/2446.58) average cfs per day
+
+mean.TP.vals=ddply(subset(TP.AGM,TP.UseData=='Yes'),"Station.ID",summarise,mean.val=mean(Geomean,na.rm=T))
+
+LC.TP=subset(mean.TP.vals,Station.ID=="LC01.7TN")$mean.val
+# LC.TP=subset(mean.TP.vals,Station.ID=="LC03.0TN01")$mean.val
+
+WG.TP=subset(mean.TP.vals,Station.ID=="WC01.11TN")$mean.val
+
+LC.FM=2400*60; #m2
+WG.FM=2600*60; #m2
+
+LC.FM*0.000247105
+
+LC.mean.HLR=(Q.treat*0.60)/LC.FM
+WG.mean.HLR=(Q.treat*0.30)/WG.FM
+
+TP.tanks=5
+TP.k.myr=5;# consistent with STA5/6
+TP.k.md=TP.k.myr/365
+TP.Cstar=2
+
+((LC.TP-TP.Cstar)/(1+TP.k.md/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+
+((WC.TP-TP.Cstar)/(1+TP.k.md/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+
+LC.Co.TP.P=((LC.TP-TP.Cstar)/(1+TP.k.md/((TP.tanks)*LC.mean.HLR))^(TP.tanks))+TP.Cstar
+LC.Co.TP.P1=((LC.TP-TP.Cstar)/(1+TP.k.md/((2)*LC.mean.HLR))^(2))+TP.Cstar
+LC.Co.TP.P2=((LC.TP-TP.Cstar)/(1+TP.k.md/((TP.tanks*2)*LC.mean.HLR))^(TP.tanks*2))+TP.Cstar
+LC.Co.TP.P3=((LC.TP-TP.Cstar)/(1+TP.k.md/((TP.tanks*10)*LC.mean.HLR))^(TP.tanks*10))+TP.Cstar
+
+LC.Co.TP.k1=((LC.TP-TP.Cstar)/(1+(TP.k.md/2)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+LC.Co.TP.k1a=((LC.TP-TP.Cstar)/(1+(TP.k.md)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+LC.Co.TP.k2=((LC.TP-TP.Cstar)/(1+(TP.k.md*2)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+LC.Co.TP.k3=((LC.TP-TP.Cstar)/(1+(TP.k.md*10)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+
+
+WG.Co.TP.k1=((WG.TP-TP.Cstar)/(1+(TP.k.md/2)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+WG.Co.TP.k1a=((WG.TP-TP.Cstar)/(1+(TP.k.md)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+WG.Co.TP.k2=((WG.TP-TP.Cstar)/(1+(TP.k.md*2)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+WG.Co.TP.k3=((WG.TP-TP.Cstar)/(1+(TP.k.md*3)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+
+
+cols=rev(wesanderson::wes_palette("Zissou1",5,"continuous"))
+ylim.val=c(0,50);by.y=10;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+# png(filename=paste0(plot.path,"WERP_FM_PnF.png"),width=6.5,height=4.5,units="in",res=200,type="windows",bg="white")
+par(family="serif",mar=c(1,1.25,0.5,1.5),oma=c(2,2,0.5,0.5));
+layout(matrix(1:2,2,1))
+tmp.LC=c(LC.TP,LC.Co.TP.k1,LC.Co.TP.k1a,LC.Co.TP.k2,LC.Co.TP.k3)
+x=barplot(tmp.LC,ylim=ylim.val,axes=F,ann=F,col=cols)
+# axis_fun(1,x,x,c("Inflow",paste0("Outflow\n (k=",c(2.5,5,10,15)," m d\u207B\u00B9)")),padj=1,line=-1)
+axis_fun(1,x,x,NA)
+text(x,tmp.LC,round(tmp.LC),pos=3,font=2,offset=0.1)
+abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
+axis_fun(2,ymaj,ymin,ymaj);box(lwd=1)
+mtext(side=3,adj=0,"Lardcan Filter Marsh")
+mtext(side=3,adj=1,line=-2,padj=0,
+      paste0("Q: ",round(m3.to.acft(Q.treat*0.60))," acft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(LC.FM))," acres "))
+
+tmp.LC=c(WG.TP,WG.Co.TP.k1,WG.Co.TP.k1a,WG.Co.TP.k2,WG.Co.TP.k3)
+x=barplot(tmp.LC,ylim=ylim.val,axes=F,ann=F,col=cols)
+axis_fun(1,x,x,c("Inflow",paste0("Outflow\n (k=",c(2.5,5,10,15)," m d\u207B\u00B9)")),padj=1,line=-1)
+text(x,tmp.LC,round(tmp.LC),pos=3,font=2,offset=0.1)
+abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
+axis_fun(2,ymaj,ymin,ymaj);box(lwd=1)
+mtext(side=3,adj=0,"Wingate Mill Filter Marsh")
+mtext(side=3,adj=1,line=-2,padj=0,
+      paste0("Q: ",round(m3.to.acft(Q.treat*0.40))," acft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(WG.FM))," acres "))
+mtext(side=2,line=0.75,"TP (\u03BCg L\u207B\u00B9)",outer=T)
+dev.off()
+
+## LC only
+Ci=LC.TP 
+Q=Q.treat*0.60 
+cbs=TP.Cstar
+
+per.red=0.6#seq(0.4,0.9,0.1)
+Co.red=Ci-(Ci*per.red)
+
+
+per.red.k25=data.frame(k=2.5,Percent.reduce=c(per.red*100),
+                      Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(TP.k.md/2))*0.000247105))
+per.red.k5=data.frame(k=5,Percent.reduce=c(per.red*100),
+                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/TP.k.md)*0.000247105))
+per.red.k10=data.frame(k=10,Percent.reduce=c(per.red*100),
+                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(TP.k.md*2))*0.000247105))
+per.red.k20=data.frame(k=15,Percent.reduce=c(per.red*100),
+                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(TP.k.md*3))*0.000247105))
+tmp=rbind(
+  per.red.k25,
+  per.red.k5,
+  per.red.k10,
+  per.red.k20)
+
+
+
+
+TP.rng=seq(10,40,1)
+area1=log((Ci-cbs)/(TP.rng-cbs))*(Q/(TP.k.md/2))*0.000247105
+area2=log((Ci-cbs)/(TP.rng-cbs))*(Q/TP.k.md)*0.000247105
+area3=log((Ci-cbs)/(TP.rng-cbs))*(Q/(TP.k.md*2))*0.000247105
+area4=log((Ci-cbs)/(TP.rng-cbs))*(Q/(TP.k.md*3))*0.000247105
+
+cols2=cols[2:5]# adjustcolor(wesanderson::wes_palette("Zissou1",3,"continuous"),0.75)
+# png(filename=paste0(plot.path,"WERP_FM_LC_areaPnF.png"),width=5,height=4,units="in",res=200,type="windows",bg="white")
+par(family="serif",mar=c(1,1.5,0.5,1.5),oma=c(2,2.5,0.5,0.25));
+
+xlim.val=c(0,50);by.x=10;xmaj=seq(xlim.val[1],xlim.val[2],by.x);xmin=seq(xlim.val[1],xlim.val[2],by.x/2)
+ylim.val=c(0,1000);by.y=250;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+
+plot(area1~TP.rng,type="n",ylim=ylim.val,xlim=xlim.val,axes=F,yaxs="i")
+abline(h=ymaj,v=xmaj,lty=3,col="grey")
+lines(TP.rng,area1,lwd=2,col=cols2[1])
+lines(TP.rng,area2,lwd=2,col=cols2[2])
+lines(TP.rng,area3,lwd=2,col=cols2[3])
+lines(TP.rng,area4,lwd=2,col=cols2[4])
+segments(13,0,13,area1[which(TP.rng==13)],lty=2)
+points(13,area4[which(TP.rng==13)],pch=21,bg="grey")
+text(13,area4[which(TP.rng==13)],round(area4[which(TP.rng==13)]),pos=4)
+points(13,area1[which(TP.rng==13)],pch=21,bg="grey")
+text(13,area1[which(TP.rng==13)],round(area1[which(TP.rng==13)]),pos=4)
+
+segments(19,0,19,area1[which(TP.rng==19)],lty=2)
+points(19,area4[which(TP.rng==19)],pch=21,bg="grey")
+text(19,area4[which(TP.rng==19)],round(area4[which(TP.rng==19)]),pos=4)
+points(19,area1[which(TP.rng==19)],pch=21,bg="grey")
+text(19,area1[which(TP.rng==19)],round(area1[which(TP.rng==19)]),pos=4)
+# abline(h=m2.to.ac(LC.FM),lty=2,col="darkorchid1")
+# points(TP.rng[which(area4<=m2.to.ac(LC.FM))[1]],m2.to.ac(LC.FM),pch=21,bg="grey")
+# text(TP.rng[which(area4<=m2.to.ac(LC.FM))[1]],m2.to.ac(LC.FM),TP.rng[which(area4<=m2.to.ac(LC.FM))[1]],pch=21,bg="grey")
+
+axis_fun(1,xmaj,xmin,xmaj,line=-0.5)
+axis_fun(2,ymaj,ymin,format(ymaj));box(lwd=1)
+mtext(side=1,line=1.5,"Outflow TP Concentration (\u03BCg L\u207B\u00B9)",cex=1)
+mtext(side=2,line=2.5,"Effective Treatment Area (Acres)")
+legend(xlim.val[2],ylim.val[2]-ylim.val[2]*0.075,legend=paste("k =",c(2.5,5.0,10,15),"m yr\u207B\u00B9"),
+       lty=1,lwd=2,col=cols2,
+       pt.cex=1.5,ncol=1,cex=0.75,bty="n",y.intersp=1.25,x.intersp=0.75,xpd=NA,xjust=1,yjust=1,title.adj = 0.5,
+       title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9","\nQ\u1D62 = ",round(m3.to.acft(Q),0),"Ac-Ft\u00B3 yr\u207B\u00B9"))
 dev.off()

@@ -67,7 +67,7 @@ class: left, middle
 
 *Conservancy of Southwest Florida*
 
-`r paste(format(as.Date("2022-12-09"),"%B %d, %Y"))#,"<br>(Updated:", format(as.Date(Sys.Date()),"%B %d, %Y"),")")`
+`r paste(format(as.Date("2022-12-09"),"%B %d, %Y"),"<br>(Updated:", format(as.Date(Sys.Date()),"%B %d, %Y"),")")`
 
 ]
 <!-- this ends up being the title slide since seal = FALSE-->
@@ -240,7 +240,39 @@ name: Treat2
 ---
 name: Treat2
 
+### Conceptual WQ treatment projects 
+
+#### Concept #1 - Filter marsh
+.pull-left[
+Simple Plug and Flow Equation
+$$C_{O} = \frac{C_{i} - C^{*}}{(1+\frac{k}{Pq})^P}+C^{*}$$
+.small[
+$C_{O}$ = Outflow Conc (mg/L); $C_{i}$ = Inflow Conc (mg/L); 
+
+$C^{*}$ = Background Conc (mg/L); k = areal rate coef (m/d);
+
+P = TIS (assume 5 for this analysis);
+
+q = HLR (m/d)
+]
+
+k-values within range of current STAs - [summary](#STA_k)
+
+Assumes plug-and-flow conditions applicable to long-linear filter marsh. Some refinement may be needed.
+
+]
+.pull-right[
+```{r,out.width="100%",fig.align="center",fig.cap="Plug and Flow sensitivity analysis for Lardcan and Wingate Mill Filter marsh." }
+
+knitr::include_graphics("./plots/WERP_FM_PnF.png")
+```
+]
+---
+name: Treat2
+
 ### Conceptual WQ treatment projects
+
+#### Filter Marsh - Proof of Concept
 .pull-left[
 
 * 10-Mile Canal Filter Marsh
@@ -251,7 +283,7 @@ name: Treat2
 ]
 
 .pull-right[
-```{r,out.width="45%",fig.align="center",fig.cap="Generalized diagram of 10-mile Canal filter marsh" }
+```{r,out.width="40%",fig.align="center",fig.cap="Generalized diagram of 10-mile Canal filter marsh" }
 
 knitr::include_graphics("./plots/LeeFilter/filtermarsh_diagram.png")
 ```
@@ -262,6 +294,8 @@ knitr::include_graphics("./plots/LeeFilter/filtermarsh_diagram.png")
 name: Treat2
 
 ### Conceptual WQ treatment projects
+
+#### Filter Marsh - Proof of Concept
 .pull-left[
 
 * 10-Mile Canal Filter Marsh
@@ -277,7 +311,7 @@ knitr::include_graphics("./plots/LeeFilter/GMCompare.png")
 ]
 
 .pull-right[
-```{r,out.width="45%",fig.align="center",fig.cap="Generalized diagram of 10-mile Canal filter marsh" }
+```{r,out.width="40%",fig.align="center",fig.cap="Generalized diagram of 10-mile Canal filter marsh" }
 
 knitr::include_graphics("./plots/LeeFilter/filtermarsh_diagram.png")
 ```
@@ -361,3 +395,27 @@ name: Treat2
 
 ]
 ]
+
+
+---
+class: inverse
+
+<!-- Blank Slide between presentation and extra slides -->
+
+---
+name: area_sens
+```{r,out.width="80%",fig.align="center",fig.cap="Range of area needed to treat inflow across various k rates for Lardcan canal filter marsh." }
+
+knitr::include_graphics("./plots/WERP_FM_LC_areaPnF.png")
+```
+
+
+---
+name: STA_k
+
+
+
+```{r,out.width="100%",fig.align="center",fig.cap="Calculated mean (± standard error) annual total phosphorus areal removal rates for Florida water year 2014 to 2021 (May 2013 – April 2021) observed in the Everglades Stormwater Treatment Areas and Northern Estuaries Protection Program Stormwater Treatment Areas. The horizontal solid line represents the mean areal removal rate across all STAs (12.2 m/yr)." }
+
+knitr::include_graphics("./plots/PriorPresentations/STA_kvalues.png")
+```
