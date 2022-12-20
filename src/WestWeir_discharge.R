@@ -164,6 +164,11 @@ q.dat$Hydrosea_yr=with(q.dat,ifelse(month>5,CY+1,CY))
 reshape2::dcast(q.dat,Date+SITE~Alt,value.var = "FLOW",mean)
 reshape2::dcast(q.dat,Date+Alt~SITE,value.var = "FLOW",mean)
 
+
+## to m3d
+CY.posQ=ddply(q.dat,c("CY","Alt","SITE"),summarise,TFlow.AcFt=sum(cfs.to.m3d(ifelse(FLOW<0,NA,FLOW)),na.rm=T))
+ddply(subset(CY.posQ,SITE=="WESTWEIR"),"Alt",summarise,TFlow=mean(TFlow.AcFt))
+
 CY.posQ=ddply(q.dat,c("CY","Alt","SITE"),summarise,TFlow.AcFt=sum(cfs.to.acftd(ifelse(FLOW<0,NA,FLOW)),na.rm=T))
 
 CY.avg=ddply(subset(CY.posQ,SITE=="WESTWEIR"),"Alt",summarise,TFlow=mean(TFlow.AcFt))

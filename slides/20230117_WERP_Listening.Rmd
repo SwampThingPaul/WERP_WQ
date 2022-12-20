@@ -258,7 +258,7 @@ q = HLR (m/d)
 
 k-values within range of current STAs - [summary](#STA_k)
 
-Average Q based on difference between WECB and ALTHR ([summary](#averageQ)) and a 60:40 split between Lardcan and Wingate mill canals
+Average Q based on difference between WECB and ALTHR ([summary](#averageQ)) and a 50:50 split between Lardcan and Wingate mill canals
 
 
 

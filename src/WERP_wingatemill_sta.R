@@ -252,10 +252,10 @@ m3.to.acft=function(x)x*0.000810714
 m2.to.ac=function(x)x*0.000247105
 
 wweirQ=data.frame(Alt = c("ALTHR", "WECB", "WFWO"), 
-                  mean.TFlow.m3d = c(682603.580515723,56183301.6826572, 47762732.276524))
+                  mean.TFlow.m3yr = c(682603.580515723,56183301.6826572, 47762732.276524))
 
-Q.treat=subset(wweirQ,Alt=="WECB")$mean.TFlow.m3d-subset(wweirQ,Alt=="WFWO")$mean.TFlow.m3d
-Q.treat=(Q.treat)/365
+Q.treat=subset(wweirQ,Alt=="WECB")$mean.TFlow.m3yr-subset(wweirQ,Alt=="ALTHR")$mean.TFlow.m3yr
+# Q.treat=(Q.treat)/365 per day
 
 # (Q.treat/2446.58) average cfs per day
 
@@ -272,32 +272,23 @@ WG.FM=2600*60; #m2
 LC.FM*0.000247105
 
 LC.mean.HLR=(Q.treat*0.60)/LC.FM
-WG.mean.HLR=(Q.treat*0.30)/WG.FM
+WG.mean.HLR=(Q.treat*0.40)/WG.FM
 
 TP.tanks=5
 TP.k.myr=5;# consistent with STA5/6
 TP.k.md=TP.k.myr/365
 TP.Cstar=2
 
-((LC.TP-TP.Cstar)/(1+TP.k.md/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+kval.seq=c(TP.k.myr/2,TP.k.myr,TP.k.myr*4,TP.k.myr*10)
+LC.Co.TP.k1=((LC.TP-TP.Cstar)/(1+(kval.seq[1])/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+LC.Co.TP.k1a=((LC.TP-TP.Cstar)/(1+(kval.seq[2])/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+LC.Co.TP.k2=((LC.TP-TP.Cstar)/(1+(kval.seq[3])/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
+LC.Co.TP.k3=((LC.TP-TP.Cstar)/(1+(kval.seq[4])/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
 
-((WC.TP-TP.Cstar)/(1+TP.k.md/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
-
-LC.Co.TP.P=((LC.TP-TP.Cstar)/(1+TP.k.md/((TP.tanks)*LC.mean.HLR))^(TP.tanks))+TP.Cstar
-LC.Co.TP.P1=((LC.TP-TP.Cstar)/(1+TP.k.md/((2)*LC.mean.HLR))^(2))+TP.Cstar
-LC.Co.TP.P2=((LC.TP-TP.Cstar)/(1+TP.k.md/((TP.tanks*2)*LC.mean.HLR))^(TP.tanks*2))+TP.Cstar
-LC.Co.TP.P3=((LC.TP-TP.Cstar)/(1+TP.k.md/((TP.tanks*10)*LC.mean.HLR))^(TP.tanks*10))+TP.Cstar
-
-LC.Co.TP.k1=((LC.TP-TP.Cstar)/(1+(TP.k.md/2)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
-LC.Co.TP.k1a=((LC.TP-TP.Cstar)/(1+(TP.k.md)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
-LC.Co.TP.k2=((LC.TP-TP.Cstar)/(1+(TP.k.md*2)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
-LC.Co.TP.k3=((LC.TP-TP.Cstar)/(1+(TP.k.md*10)/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
-
-
-WG.Co.TP.k1=((WG.TP-TP.Cstar)/(1+(TP.k.md/2)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
-WG.Co.TP.k1a=((WG.TP-TP.Cstar)/(1+(TP.k.md)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
-WG.Co.TP.k2=((WG.TP-TP.Cstar)/(1+(TP.k.md*2)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
-WG.Co.TP.k3=((WG.TP-TP.Cstar)/(1+(TP.k.md*3)/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+WG.Co.TP.k1=((WG.TP-TP.Cstar)/(1+(kval.seq[1])/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+WG.Co.TP.k1a=((WG.TP-TP.Cstar)/(1+(kval.seq[2])/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+WG.Co.TP.k2=((WG.TP-TP.Cstar)/(1+(kval.seq[3])/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
+WG.Co.TP.k3=((WG.TP-TP.Cstar)/(1+(kval.seq[4])/(TP.tanks*WG.mean.HLR))^TP.tanks)+TP.Cstar
 
 
 cols=rev(wesanderson::wes_palette("Zissou1",5,"continuous"))
@@ -314,17 +305,17 @@ abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
 axis_fun(2,ymaj,ymin,ymaj);box(lwd=1)
 mtext(side=3,adj=0,"Lardcan Filter Marsh")
 mtext(side=3,adj=1,line=-2,padj=0,
-      paste0("Q: ",round(m3.to.acft(Q.treat*0.60))," acft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(LC.FM))," acres "))
+      paste0("Q: ",round(m3.to.acft(Q.treat*0.60)/1000)," kacft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(LC.FM))," acres "))
 
 tmp.LC=c(WG.TP,WG.Co.TP.k1,WG.Co.TP.k1a,WG.Co.TP.k2,WG.Co.TP.k3)
 x=barplot(tmp.LC,ylim=ylim.val,axes=F,ann=F,col=cols)
-axis_fun(1,x,x,c("Inflow",paste0("Outflow\n (k=",c(2.5,5,10,15)," m d\u207B\u00B9)")),padj=1,line=-1)
+axis_fun(1,x,x,c("Inflow",paste0("Outflow\n (k=",round(kval.seq,1)," m yr\u207B\u00B9)")),padj=1,line=-1,cex=0.95)
 text(x,tmp.LC,round(tmp.LC),pos=3,font=2,offset=0.1)
 abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
 axis_fun(2,ymaj,ymin,ymaj);box(lwd=1)
 mtext(side=3,adj=0,"Wingate Mill Filter Marsh")
 mtext(side=3,adj=1,line=-2,padj=0,
-      paste0("Q: ",round(m3.to.acft(Q.treat*0.40))," acft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(WG.FM))," acres "))
+      paste0("Q: ",round(m3.to.acft(Q.treat*0.40)/1000)," kacft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(WG.FM))," acres "))
 mtext(side=2,line=0.75,"TP (\u03BCg L\u207B\u00B9)",outer=T)
 dev.off()
 
@@ -355,17 +346,17 @@ tmp=rbind(
 
 
 TP.rng=seq(10,40,1)
-area1=log((Ci-cbs)/(TP.rng-cbs))*(Q/(TP.k.md/2))*0.000247105
-area2=log((Ci-cbs)/(TP.rng-cbs))*(Q/TP.k.md)*0.000247105
-area3=log((Ci-cbs)/(TP.rng-cbs))*(Q/(TP.k.md*2))*0.000247105
-area4=log((Ci-cbs)/(TP.rng-cbs))*(Q/(TP.k.md*3))*0.000247105
+area1=log((Ci-cbs)/(TP.rng-cbs))*(Q/(kval.seq[1]))*0.000247105
+area2=log((Ci-cbs)/(TP.rng-cbs))*(Q/kval.seq[2])*0.000247105
+area3=log((Ci-cbs)/(TP.rng-cbs))*(Q/(kval.seq[3]))*0.000247105
+area4=log((Ci-cbs)/(TP.rng-cbs))*(Q/(kval.seq[4]))*0.000247105
 
 cols2=cols[2:5]# adjustcolor(wesanderson::wes_palette("Zissou1",3,"continuous"),0.75)
 # png(filename=paste0(plot.path,"WERP_FM_LC_areaPnF.png"),width=5,height=4,units="in",res=200,type="windows",bg="white")
 par(family="serif",mar=c(1,1.5,0.5,1.5),oma=c(2,2.5,0.5,0.25));
 
 xlim.val=c(0,50);by.x=10;xmaj=seq(xlim.val[1],xlim.val[2],by.x);xmin=seq(xlim.val[1],xlim.val[2],by.x/2)
-ylim.val=c(0,1000);by.y=250;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+ylim.val=c(0,6000);by.y=1000;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
 
 plot(area1~TP.rng,type="n",ylim=ylim.val,xlim=xlim.val,axes=F,yaxs="i")
 abline(h=ymaj,v=xmaj,lty=3,col="grey")
@@ -392,8 +383,42 @@ axis_fun(1,xmaj,xmin,xmaj,line=-0.5)
 axis_fun(2,ymaj,ymin,format(ymaj));box(lwd=1)
 mtext(side=1,line=1.5,"Outflow TP Concentration (\u03BCg L\u207B\u00B9)",cex=1)
 mtext(side=2,line=2.5,"Effective Treatment Area (Acres)")
-legend(xlim.val[2],ylim.val[2]-ylim.val[2]*0.075,legend=paste("k =",c(2.5,5.0,10,15),"m yr\u207B\u00B9"),
+legend(xlim.val[2],ylim.val[2]-ylim.val[2]*0.075,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
        lty=1,lwd=2,col=cols2,
        pt.cex=1.5,ncol=1,cex=0.75,bty="n",y.intersp=1.25,x.intersp=0.75,xpd=NA,xjust=1,yjust=1,title.adj = 0.5,
-       title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9","\nQ\u1D62 = ",round(m3.to.acft(Q),0),"Ac-Ft\u00B3 yr\u207B\u00B9"))
+       title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9","\nQ\u1D62 = ",round(m3.to.acft(Q)/1000,0),"kAc-Ft yr\u207B\u00B9"))
+dev.off()
+
+
+(Q.treat*0.60)/LC.FM
+LC.HLR.seq=seq(10000,Q.treat*0.80,10000)/LC.FM
+
+y.val1=tmp=((LC.TP-TP.Cstar)/(1+(kval.seq[1])/(TP.tanks*LC.HLR.seq))^TP.tanks)+TP.Cstar
+y.val2=tmp=((LC.TP-TP.Cstar)/(1+(kval.seq[2])/(TP.tanks*LC.HLR.seq))^TP.tanks)+TP.Cstar
+y.val3=tmp=((LC.TP-TP.Cstar)/(1+(kval.seq[3])/(TP.tanks*LC.HLR.seq))^TP.tanks)+TP.Cstar
+y.val4=tmp=((LC.TP-TP.Cstar)/(1+(kval.seq[4])/(TP.tanks*LC.HLR.seq))^TP.tanks)+TP.Cstar
+x.val=m3.to.acft(LC.HLR.seq*LC.FM)
+
+# png(filename=paste0(plot.path,"WERP_FM_LC_Q_Co.png"),width=5,height=4,units="in",res=200,type="windows",bg="white")
+par(family="serif",mar=c(1,1.5,0.5,1.5),oma=c(2,2.5,0.5,0.25));
+
+xlim.val=c(0,40e3);by.x=10e3;xmaj=seq(xlim.val[1],xlim.val[2],by.x);xmin=seq(xlim.val[1],xlim.val[2],by.x/2)
+ylim.val=c(0,50);by.y=10;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+
+plot(y.val1~x.val,type="n",ylim=ylim.val,xlim=xlim.val,axes=F,yaxs="i")
+abline(h=ymaj,v=xmaj,lty=3,col="grey")
+lines(x.val,y.val1,lwd=2,col=cols2[1])
+lines(x.val,y.val2,lwd=2,col=cols2[2])
+lines(x.val,y.val3,lwd=2,col=cols2[3])
+lines(x.val,y.val4,lwd=2,col=cols2[4])
+
+axis_fun(1,xmaj,xmin,xmaj/1000,line=-0.5)
+axis_fun(2,ymaj,ymin,format(ymaj));box(lwd=1)
+mtext(side=2,line=2.5,"Outflow TP Concentration (\u03BCg L\u207B\u00B9)",cex=1)
+mtext(side=1,line=1.5,"Inflow Volume (kAcFt Yr\u207B\u00B9)")
+abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
+legend(xlim.val[2],ylim.val[1]+ylim.val[1]*0.075,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
+       lty=1,lwd=2,col=cols2,
+       pt.cex=1.5,ncol=1,cex=0.75,bty="n",y.intersp=1.25,x.intersp=0.75,xpd=NA,xjust=1,yjust=0,title.adj = 0.5,
+       title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9"))
 dev.off()
