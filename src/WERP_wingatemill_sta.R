@@ -271,8 +271,8 @@ WG.FM=2600*60; #m2
 
 LC.FM*0.000247105
 
-LC.mean.HLR=(Q.treat*0.60)/LC.FM
-WG.mean.HLR=(Q.treat*0.40)/WG.FM
+LC.mean.HLR=(Q.treat*0.50)/LC.FM
+WG.mean.HLR=(Q.treat*0.50)/WG.FM
 
 TP.tanks=5
 TP.k.myr=5;# consistent with STA5/6
@@ -305,7 +305,7 @@ abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
 axis_fun(2,ymaj,ymin,ymaj);box(lwd=1)
 mtext(side=3,adj=0,"Lardcan Filter Marsh")
 mtext(side=3,adj=1,line=-2,padj=0,
-      paste0("Q: ",round(m3.to.acft(Q.treat*0.60)/1000)," kacft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(LC.FM))," acres "))
+      paste0("Q: ",round(m3.to.acft(Q.treat*0.50)/1000)," kacft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(LC.FM))," acres "))
 
 tmp.LC=c(WG.TP,WG.Co.TP.k1,WG.Co.TP.k1a,WG.Co.TP.k2,WG.Co.TP.k3)
 x=barplot(tmp.LC,ylim=ylim.val,axes=F,ann=F,col=cols)
@@ -315,13 +315,13 @@ abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
 axis_fun(2,ymaj,ymin,ymaj);box(lwd=1)
 mtext(side=3,adj=0,"Wingate Mill Filter Marsh")
 mtext(side=3,adj=1,line=-2,padj=0,
-      paste0("Q: ",round(m3.to.acft(Q.treat*0.40)/1000)," kacft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(WG.FM))," acres "))
+      paste0("Q: ",round(m3.to.acft(Q.treat*0.50)/1000)," kacft yr\u207B\u00B9 \nArea: ",round(m2.to.ac(WG.FM))," acres "))
 mtext(side=2,line=0.75,"TP (\u03BCg L\u207B\u00B9)",outer=T)
 dev.off()
 
 ## LC only
 Ci=LC.TP 
-Q=Q.treat*0.60 
+Q=Q.treat*0.50 
 cbs=TP.Cstar
 
 per.red=0.6#seq(0.4,0.9,0.1)
@@ -390,7 +390,7 @@ legend(xlim.val[2],ylim.val[2]-ylim.val[2]*0.075,legend=paste("k =",round(kval.s
 dev.off()
 
 
-(Q.treat*0.60)/LC.FM
+(Q.treat*0.50)/LC.FM
 LC.HLR.seq=seq(10000,Q.treat*0.80,10000)/LC.FM
 
 y.val1=tmp=((LC.TP-TP.Cstar)/(1+(kval.seq[1])/(TP.tanks*LC.HLR.seq))^TP.tanks)+TP.Cstar

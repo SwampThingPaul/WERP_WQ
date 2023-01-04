@@ -268,10 +268,12 @@ Average Q based on difference between WECB and ALTHR ([summary](#averageQ)) and 
 
 knitr::include_graphics("./plots/WERP_FM_PnF.png")
 ```
+
+* Assumes plug-and-flow conditions applicable to long-linear filter marsh. Some refinement may be needed.
+
+* Some uncertainty in an appropriate k value to apply.
 ]
 
-???
-Assumes plug-and-flow conditions applicable to long-linear filter marsh. Some refinement may be needed.
 
 ---
 name: Treat2
