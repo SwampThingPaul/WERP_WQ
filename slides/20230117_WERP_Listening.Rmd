@@ -373,14 +373,12 @@ name: Treat2
 
 ### Conceptual WQ treatment projects
 
-#### Concept #2 - Hybrid Wetland Treatment
-
 * Combine chemical and wetland treatment to reduce nutrients
   * Utilized flocculents such as Alum, Polyaluminium chloride (PAC), Ferrous Chloride to reduce nutrient concentrations
   * Wetland treatment to provide additional treatment prior to discharge
   * Proof of Concept - Grassy Island HWTT and Lemkin Creek/Wolff Ditch HWTT
   
-* Based on evaluation of past and ongoing pilot projects, recommend larger wetland features to improve treatment
+<!-- * Based on evaluation of past and ongoing pilot projects, recommend larger wetland features to improve treatment -->
 
 
 .pull-left[
@@ -404,6 +402,7 @@ name: Treat2
 ]
 ]
 
+Based on evaluation of past and ongoing pilot projects, the **cons** outweighs the pros for HWTT or chemical treatment and therefore it is <FONT COLOR="RED"> NOT </FONT> supported/recommended by SCCF and CoSWFL.
 
 ---
 class: inverse

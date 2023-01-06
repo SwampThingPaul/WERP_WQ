@@ -279,7 +279,7 @@ TP.k.myr=5;# consistent with STA5/6
 TP.k.md=TP.k.myr/365
 TP.Cstar=2
 
-kval.seq=c(TP.k.myr/2,TP.k.myr,TP.k.myr*4,TP.k.myr*10)
+kval.seq=c(TP.k.myr,TP.k.myr*4,TP.k.myr*10,TP.k.myr*20)
 LC.Co.TP.k1=((LC.TP-TP.Cstar)/(1+(kval.seq[1])/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
 LC.Co.TP.k1a=((LC.TP-TP.Cstar)/(1+(kval.seq[2])/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
 LC.Co.TP.k2=((LC.TP-TP.Cstar)/(1+(kval.seq[3])/(TP.tanks*LC.mean.HLR))^TP.tanks)+TP.Cstar
@@ -309,7 +309,7 @@ mtext(side=3,adj=1,line=-2,padj=0,
 
 tmp.LC=c(WG.TP,WG.Co.TP.k1,WG.Co.TP.k1a,WG.Co.TP.k2,WG.Co.TP.k3)
 x=barplot(tmp.LC,ylim=ylim.val,axes=F,ann=F,col=cols)
-axis_fun(1,x,x,c("Inflow",paste0("Outflow\n (k=",round(kval.seq,1)," m yr\u207B\u00B9)")),padj=1,line=-1,cex=0.95)
+axis_fun(1,x,x,c("Inflow",paste0("Outflow\n (k=",round(kval.seq,1)," m yr\u207B\u00B9)")),padj=1,line=-1,cex=0.8)
 text(x,tmp.LC,round(tmp.LC),pos=3,font=2,offset=0.1)
 abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
 axis_fun(2,ymaj,ymin,ymaj);box(lwd=1)
@@ -328,19 +328,19 @@ per.red=0.6#seq(0.4,0.9,0.1)
 Co.red=Ci-(Ci*per.red)
 
 
-per.red.k25=data.frame(k=2.5,Percent.reduce=c(per.red*100),
-                      Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(TP.k.md/2))*0.000247105))
-per.red.k5=data.frame(k=5,Percent.reduce=c(per.red*100),
-                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/TP.k.md)*0.000247105))
-per.red.k10=data.frame(k=10,Percent.reduce=c(per.red*100),
-                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(TP.k.md*2))*0.000247105))
-per.red.k20=data.frame(k=15,Percent.reduce=c(per.red*100),
-                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(TP.k.md*3))*0.000247105))
+per.red.k1=data.frame(k=kval.seq[1],Percent.reduce=c(per.red*100),
+                      Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(kval.seq[1]))*0.000247105))
+per.red.k2=data.frame(k=kval.seq[2],Percent.reduce=c(per.red*100),
+                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/kval.seq[2])*0.000247105))
+per.red.k3=data.frame(k=kval.seq[3],Percent.reduce=c(per.red*100),
+                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(kval.seq[3]))*0.000247105))
+per.red.k4=data.frame(k=kval.seq[4],Percent.reduce=c(per.red*100),
+                       Area=sapply(Co.red,FUN=function(x)log((Ci-cbs)/(x-cbs))*(Q/(kval.seq[4]))*0.000247105))
 tmp=rbind(
-  per.red.k25,
-  per.red.k5,
-  per.red.k10,
-  per.red.k20)
+  per.red.k1,
+  per.red.k2,
+  per.red.k3,
+  per.red.k4)
 
 
 
@@ -356,7 +356,7 @@ cols2=cols[2:5]# adjustcolor(wesanderson::wes_palette("Zissou1",3,"continuous"),
 par(family="serif",mar=c(1,1.5,0.5,1.5),oma=c(2,2.5,0.5,0.25));
 
 xlim.val=c(0,50);by.x=10;xmaj=seq(xlim.val[1],xlim.val[2],by.x);xmin=seq(xlim.val[1],xlim.val[2],by.x/2)
-ylim.val=c(0,6000);by.y=1000;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
+ylim.val=c(0,2500);by.y=500;ymaj=seq(ylim.val[1],ylim.val[2],by.y);ymin=seq(ylim.val[1],ylim.val[2],by.y/2)
 
 plot(area1~TP.rng,type="n",ylim=ylim.val,xlim=xlim.val,axes=F,yaxs="i")
 abline(h=ymaj,v=xmaj,lty=3,col="grey")
@@ -383,7 +383,7 @@ axis_fun(1,xmaj,xmin,xmaj,line=-0.5)
 axis_fun(2,ymaj,ymin,format(ymaj));box(lwd=1)
 mtext(side=1,line=1.5,"Outflow TP Concentration (\u03BCg L\u207B\u00B9)",cex=1)
 mtext(side=2,line=2.5,"Effective Treatment Area (Acres)")
-legend(xlim.val[2],ylim.val[2]-ylim.val[2]*0.075,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
+legend(xlim.val[2],ylim.val[2]-ylim.val[2]*0.1,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
        lty=1,lwd=2,col=cols2,
        pt.cex=1.5,ncol=1,cex=0.75,bty="n",y.intersp=1.25,x.intersp=0.75,xpd=NA,xjust=1,yjust=1,title.adj = 0.5,
        title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9","\nQ\u1D62 = ",round(m3.to.acft(Q)/1000,0),"kAc-Ft yr\u207B\u00B9"))
@@ -417,7 +417,7 @@ axis_fun(2,ymaj,ymin,format(ymaj));box(lwd=1)
 mtext(side=2,line=2.5,"Outflow TP Concentration (\u03BCg L\u207B\u00B9)",cex=1)
 mtext(side=1,line=1.5,"Inflow Volume (kAcFt Yr\u207B\u00B9)")
 abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
-legend(xlim.val[2],ylim.val[1]+ylim.val[1]*0.075,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
+legend(xlim.val[2],ylim.val[1]+ylim.val[1]*0.1,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
        lty=1,lwd=2,col=cols2,
        pt.cex=1.5,ncol=1,cex=0.75,bty="n",y.intersp=1.25,x.intersp=0.75,xpd=NA,xjust=1,yjust=0,title.adj = 0.5,
        title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9"))
