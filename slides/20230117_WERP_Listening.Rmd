@@ -238,7 +238,7 @@ name: Treat2
   * ~ 2.6 km (~1.6 mi) between junction to WC034TN (Inactive WQ site).
 
 ---
-name: Treat2
+name: Treat2_plugflow
 
 ### Conceptual WQ treatment projects 
 
@@ -327,7 +327,7 @@ knitr::include_graphics("./plots/LeeFilter/filtermarsh_diagram.png")
 ]
 
 ---
-name: Treat2
+name: Treat2_conclude
 
 ### Conceptual WQ treatment projects
 
@@ -368,8 +368,12 @@ LC.a.acres+WG.a.acres
 ]
 
 
+*With more area comes more treatment* - [Example](#area_sens) of variability of outflow TP concentrations and k-value for Lardcan canal filter marsh. 
+
+Outflow TP are dependent on [inflow volume](#vol_sens)(and k-value) at a given area.
+
 ---
-name: Treat2
+name: Treat3
 
 ### Conceptual WQ treatment projects
 
@@ -417,12 +421,15 @@ name: averageQ
 knitr::include_graphics("./plots/AvgFloodControl.png")
 ```
 
+[Return](#Treat2_plugflow)
 ---
 name: area_sens
 ```{r,out.width="80%",fig.align="center",fig.cap="Range of area needed to treat inflow across various k rates for Lardcan canal filter marsh." }
 
 knitr::include_graphics("./plots/WERP_FM_LC_areaPnF.png")
 ```
+
+[Return](#Treat2_conclude)
 
 ---
 name: vol_sens
@@ -432,6 +439,8 @@ name: vol_sens
 knitr::include_graphics("./plots/WERP_FM_LC_Q_Co.png")
 ```
 
+[Return](#Treat2_conclude)
+
 ---
 name: STA_k
 
@@ -439,3 +448,5 @@ name: STA_k
 
 knitr::include_graphics("./plots/PriorPresentations/STA_kvalues.png")
 ```
+
+[Return](#Treat2_plugflow)

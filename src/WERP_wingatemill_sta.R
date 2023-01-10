@@ -370,11 +370,11 @@ text(13,area4[which(TP.rng==13)],round(area4[which(TP.rng==13)]),pos=4)
 points(13,area1[which(TP.rng==13)],pch=21,bg="grey")
 text(13,area1[which(TP.rng==13)],round(area1[which(TP.rng==13)]),pos=4)
 
-segments(19,0,19,area1[which(TP.rng==19)],lty=2)
-points(19,area4[which(TP.rng==19)],pch=21,bg="grey")
-text(19,area4[which(TP.rng==19)],round(area4[which(TP.rng==19)]),pos=4)
-points(19,area1[which(TP.rng==19)],pch=21,bg="grey")
-text(19,area1[which(TP.rng==19)],round(area1[which(TP.rng==19)]),pos=4)
+segments(21,0,21,area1[which(TP.rng==21)],lty=2)
+points(21,area4[which(TP.rng==21)],pch=21,bg="grey")
+text(21,area4[which(TP.rng==21)],round(area4[which(TP.rng==21)]),pos=4)
+points(21,area1[which(TP.rng==21)],pch=21,bg="grey")
+text(21,area1[which(TP.rng==21)],round(area1[which(TP.rng==21)]),pos=4)
 # abline(h=m2.to.ac(LC.FM),lty=2,col="darkorchid1")
 # points(TP.rng[which(area4<=m2.to.ac(LC.FM))[1]],m2.to.ac(LC.FM),pch=21,bg="grey")
 # text(TP.rng[which(area4<=m2.to.ac(LC.FM))[1]],m2.to.ac(LC.FM),TP.rng[which(area4<=m2.to.ac(LC.FM))[1]],pch=21,bg="grey")
@@ -383,6 +383,7 @@ axis_fun(1,xmaj,xmin,xmaj,line=-0.5)
 axis_fun(2,ymaj,ymin,format(ymaj));box(lwd=1)
 mtext(side=1,line=1.5,"Outflow TP Concentration (\u03BCg L\u207B\u00B9)",cex=1)
 mtext(side=2,line=2.5,"Effective Treatment Area (Acres)")
+mtext(side=3,adj=0,"Conceptual Lardcan Canal Filter Marsh")
 legend(xlim.val[2],ylim.val[2]-ylim.val[2]*0.1,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
        lty=1,lwd=2,col=cols2,
        pt.cex=1.5,ncol=1,cex=0.75,bty="n",y.intersp=1.25,x.intersp=0.75,xpd=NA,xjust=1,yjust=1,title.adj = 0.5,
@@ -416,9 +417,10 @@ axis_fun(1,xmaj,xmin,xmaj/1000,line=-0.5)
 axis_fun(2,ymaj,ymin,format(ymaj));box(lwd=1)
 mtext(side=2,line=2.5,"Outflow TP Concentration (\u03BCg L\u207B\u00B9)",cex=1)
 mtext(side=1,line=1.5,"Inflow Volume (kAcFt Yr\u207B\u00B9)")
+mtext(side=3,adj=0,"Conceptual Lardcan Canal Filter Marsh")
 abline(h=c(13,21),lty=2,col="darkorchid1",lwd=1.5)
 legend(xlim.val[2],ylim.val[1]+ylim.val[1]*0.1,legend=paste("k =",round(kval.seq,1),"m yr\u207B\u00B9"),
        lty=1,lwd=2,col=cols2,
        pt.cex=1.5,ncol=1,cex=0.75,bty="n",y.intersp=1.25,x.intersp=0.75,xpd=NA,xjust=1,yjust=0,title.adj = 0.5,
-       title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9"))
+       title=paste("Areal Removal Rate\nC\u1D62 =",round(Ci,0),"\u03BCg L\u207B\u00B9\nArea =",round(LC.FM*0.000247105,0),"acres"))
 dev.off()
