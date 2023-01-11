@@ -220,7 +220,7 @@ name: Treat2
 
 
 ---
-name: Treat2
+name: Treat2Intro
 
 ### Conceptual WQ treatment projects
 
@@ -236,6 +236,9 @@ name: Treat2
 
 * Wingate Mill canal filter marsh
   * ~ 2.6 km (~1.6 mi) between junction to WC034TN (Inactive WQ site).
+
+
+Conceptual project placement - [map](#conmap)
 
 ---
 name: Treat2_plugflow
@@ -412,6 +415,16 @@ Based on evaluation of past and ongoing pilot projects, the **cons** outweighs t
 class: inverse
 
 <!-- Blank Slide between presentation and extra slides -->
+
+---
+name: conmap
+
+```{r,out.width="80%",fig.align="center",fig.cap="General conceptual project placement - NOT TO SCALE." }
+
+knitr::include_graphics("./plots/GeneralConceptual_FilterMarshed.png")
+```
+
+[Return](#Treat2Intro)
 
 ---
 name: averageQ
