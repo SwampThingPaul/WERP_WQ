@@ -92,6 +92,9 @@ h1, h2, h3 {
     display: none; 
 }
 
+.big { 
+  font-size: 120%;
+}
 
 .small { 
   font-size: 70%;
@@ -195,10 +198,10 @@ blockquote, .blockquote {
 .content-box-purple,
 .content-box-red,
 .content-box-yellow {
-    border-radius: 5px;
-    margin: 0 0 0 20px;
+    border-radius: 10px;
+    margin: 4px;
     overflow: hidden;
-    padding: 10px;
+    padding: 4px;
     width: 90%;
 }
 

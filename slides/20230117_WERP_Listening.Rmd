@@ -224,7 +224,7 @@ name: Treat2Intro
 
 ### Conceptual WQ treatment projects
 
-#### Concept #1 - Filter marsh
+#### Filter marsh
 
 * Lard Can and Wingate Mill canal filter marsh(es)
   * Utilize land next to canals to build a filter marsh (long linear STA) along the canal.
@@ -245,7 +245,7 @@ name: Treat2_plugflow
 
 ### Conceptual WQ treatment projects 
 
-#### Concept #1 - Filter marsh
+#### Filter marsh
 .pull-left[
 Simple Plug and Flow Equation
 $$C_{O} = \frac{C_{i} - C^{*}}{(1+\frac{k}{Pq})^P}+C^{*}$$
@@ -334,7 +334,7 @@ name: Treat2_conclude
 
 ### Conceptual WQ treatment projects
 
-#### Concept #1 - Filter marsh
+#### Filter marsh
 
 ```{r, include=F}
 LC.l=2.4
@@ -386,6 +386,12 @@ name: Treat3
   * Proof of Concept - Grassy Island HWTT and Lemkin Creek/Wolff Ditch HWTT
   
 <!-- * Based on evaluation of past and ongoing pilot projects, recommend larger wetland features to improve treatment -->
+<!-- <FONT COLOR="RED"> </FONT> -->
+
+.content-box-red[
+.big[Based on evaluation of past and ongoing pilot projects, HWTT or chemical treatment is .red[NOT]  supported/recommended by SCCF and CoSWFL.
+]
+]
 
 
 .pull-left[
@@ -408,8 +414,6 @@ name: Treat3
 
 ]
 ]
-
-Based on evaluation of past and ongoing pilot projects, the **cons** outweighs the pros for HWTT or chemical treatment and therefore it is <FONT COLOR="RED"> NOT </FONT> supported/recommended by SCCF and CoSWFL.
 
 ---
 class: inverse
