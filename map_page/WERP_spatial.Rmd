@@ -1,0 +1,215 @@
+---
+title: "Western Everglades Planning Project"
+output: 
+  html_document: 
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+## Libraries
+#devtools::install_github("SwampThingPaul/AnalystHelper")
+library(AnalystHelper);
+library(openxlsx)
+library(plyr)
+library(reshape2)
+
+# GIS Libraries
+library(rgdal)
+library(rgeos)
+library(raster)
+library(gstat)
+library(tmap)
+
+library(sf)
+library(sfheaders)
+
+# netcdf 
+library(chron) # package for creating chronological objects
+library(ncdf4)  # package to handle NetCDF
+
+## Paths
+wd="C:/Julian_LaCie/_GitHub/WERP_WQ"
+
+paths=paste0(wd,c("/Plots/","/Exports/","/Data/","/src/","/GIS"))
+# Folder.Maker(paths);#One and done. Creates folders in working directory.
+plot.path=paths[1]
+export.path=paths[2]
+data.path=paths[3]
+gis.path=paths[5]
+GIS.path.gen="C:/Julian_LaCie/_GISData"
+
+# Helper variables
+nad83.pro=CRS("+init=epsg:4269")
+utm17=CRS("+init=epsg:26917")
+wgs84=CRS("+init=epsg:4326")
+NAD83HARN=CRS("+init=epsg:2881")
+
+tmap_mode("view")
+tmap_options(check.and.fix=T)
+# GIS ---------------------------------------------------------------------
+gen.GIS="C:/Julian_LaCie/_GISData"
+
+canals=readOGR(paste0(gen.GIS,"/AHED_release/20230405/shp"),"canals")
+canals=spTransform(canals,NAD83HARN)
+unique(canals$FLOWLINETY)
+canals2=subset(canals,FLOWLINETY%in%c("CANALDITCH","STREAMRIVER"))
+
+BCNP=spTransform(readOGR(paste0(gen.GIS,"/SFER_GIS_Geodatabase.gdb"),"BCNP"),NAD83HARN)
+trib.all=spTransform(readOGR(paste0(gen.GIS,"/SFER_GIS_Geodatabase.gdb"),"TribalAreas_all"),NAD83HARN)
+
+# -------------------------------------------------------------------------
+alts=c("WFWOR","WECBRR","ALTHR","ALTHNF")
+n.alts=length(alts)
+
+cols.alts=c("grey50","grey10",wesanderson::wes_palette("Zissou1",n.alts-2,"continuous"))
+
+# globalmonitors ----------------------------------------------------------
+WFWOR.dat.nc<-nc_open(paste0(data.path,"20230331/",alts[1],"/globalmonitors.nc"))
+WECBRR.dat.nc<-nc_open(paste0(data.path,"20230331/",alts[2],"/globalmonitors.nc"))
+ALTHR.dat.nc<-nc_open(paste0(data.path,"20230331/",alts[3],"/globalmonitors.nc"))
+ALTHNF.dat.nc<-nc_open(paste0(data.path,"20230331/",alts[4],"/globalmonitors.nc"))
+
+mesh1=readOGR(paste0(export.path,"GIS"),"WERPMesh")
+
+# Ponding/HP --------------------------------------------------------------
+ts_stamp=ncvar_get(WFWOR.dat.nc,"timestamps")
+ts_stamp=ts_stamp+1
+date.vals=as.Date("1964-12-31")+lubridate::duration(ts_stamp,"days")
+range(date.vals)
+dates.df=data.frame(ts_stamp=ts_stamp,date=date.vals)
+dates.df$CY=as.numeric(format(dates.df$date,'%Y'))
+
+
+yr.vals=seq(1965,2005,1)
+FWO.ponding=ncvar_get(WFWOR.dat.nc,"PondDepth")
+
+FWO.pond.mean=matrix(NA,nrow=nrow(FWO.ponding),ncol=length(yr.vals))
+FWO.HP.mean=matrix(NA,nrow=nrow(FWO.ponding),ncol=length(yr.vals))
+for(i in 1:length(yr.vals)){
+  tmp=rowMeans(FWO.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp])
+  FWO.pond.mean[,i]=tmp
+  
+  tmp=rowSums(FWO.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp]>0,na.rm=T)
+  FWO.HP.mean[,i]=tmp
+}
+
+WECBRR.ponding=ncvar_get(WECBRR.dat.nc,"PondDepth")
+WECBRR.pond.mean=matrix(NA,nrow=nrow(WECBRR.ponding),ncol=length(yr.vals))
+WECBRR.HP.mean=matrix(NA,nrow=nrow(WECBRR.ponding),ncol=length(yr.vals))
+for(i in 1:length(yr.vals)){
+  tmp=rowMeans(WECBRR.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp])
+  WECBRR.pond.mean[,i]=tmp
+  
+  tmp=rowSums(WECBRR.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp]>0,na.rm=T)
+  WECBRR.HP.mean[,i]=tmp
+}
+
+ALTHR.ponding=ncvar_get(ALTHR.dat.nc,"PondDepth")
+ALTHR.pond.mean=matrix(NA,nrow=nrow(ALTHR.ponding),ncol=length(yr.vals))
+ALTHR.HP.mean=matrix(NA,nrow=nrow(ALTHR.ponding),ncol=length(yr.vals))
+for(i in 1:length(yr.vals)){
+  tmp=rowMeans(ALTHR.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp])
+  ALTHR.pond.mean[,i]=tmp
+  
+  tmp=rowSums(ALTHR.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp]>0,na.rm=T)
+  ALTHR.HP.mean[,i]=tmp
+}
+
+ALTHNF.ponding=ncvar_get(ALTHNF.dat.nc,"PondDepth")
+ALTHNF.pond.mean=matrix(NA,nrow=nrow(ALTHNF.ponding),ncol=length(yr.vals))
+ALTHNF.HP.mean=matrix(NA,nrow=nrow(ALTHNF.ponding),ncol=length(yr.vals))
+for(i in 1:length(yr.vals)){
+  tmp=rowMeans(ALTHNF.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp])
+  ALTHNF.pond.mean[,i]=tmp
+  
+  tmp=rowSums(ALTHNF.ponding[,subset(dates.df,CY==yr.vals[i])$ts_stamp]>0,na.rm=T)
+  ALTHNF.HP.mean[,i]=tmp
+}
+
+## Temporally average spatial TS
+HPmean=cbind(mesh1,data.frame(FWO=rowMeans(FWO.HP.mean,na.rm=T),
+                              WECBRR=rowMeans(WECBRR.HP.mean,na.rm=T),
+                              ALTHR=rowMeans(ALTHR.HP.mean,na.rm=T),
+                              ALTHNF=rowMeans(ALTHNF.HP.mean)))
+PondDepth.mean=cbind(mesh1,data.frame(FWO=rowMeans(FWO.pond.mean,na.rm=T),
+                                     WECBRR=rowMeans(WECBRR.pond.mean,na.rm=T),
+                                     ALTHR=rowMeans(ALTHR.pond.mean,na.rm=T),
+                                     ALTHNF=rowMeans(ALTHNF.pond.mean)))
+
+pond.pal=c("grey95",
+                  rgb(255/255,253/255,114/253),
+                  rgb(207/255,255/255,130/255),
+                  rgb(51/255,206/255,85/255),
+                  rgb(147/255,213/255,255/255),
+                  rgb(67/255,133/255,255/255))
+HP.pal=c("grey95",
+                rgb(255/255,187/255,51/253),
+                rgb(255/255,253/255,114/253),
+                rgb(207/255,255/255,130/255),
+                rgb(51/255,206/255,85/255),
+                rgb(147/255,213/255,255/255),
+                rgb(67/255,133/255,255/255))
+
+
+pond.bks=c(0,0.5,1,2,3,5)
+HP.bks=c(0,60,120,180,240,300,330,366)
+
+HPmean.WFWOR=HPmean
+HPmean.WECBRR=HPmean
+HPmean.ALTHR=HPmean
+HPmean.ALTHNF=HPmean
+
+PondDepth.mean.WFWOR=PondDepth.mean
+PondDepth.mean.WECBRR=PondDepth.mean
+PondDepth.mean.ALTHR=PondDepth.mean
+PondDepth.mean.ALTHNF=PondDepth.mean
+
+canals.clip=rgeos::gIntersection(canals2,raster::aggregate(gBuffer(mesh1,width=10000)))
+
+
+```
+
+Updated: `r paste(format(Sys.Date(),"%B %d, %Y"))`
+
+***
+
+This page is intended to provide visualization of Regional Simulation Model (RSM) output provided by the Interagency Modeling Center (SFWMD and USACE) as part of the WERP planning project. This information is not intended to replace information generated by SFWMD, USACE or any Project Delivery Team participants. 
+
+The information below is average annual (Jan - Dec) hydroperiod and ponding depth across the RSMGL modeling mesh. The period of simulation for WERP is Jan 1965 to Dec 2005. As presented below background imagery and canal shapefiles do not reflect changes associated with restoration alternatives and are intended to orient the viewer.  
+
+## Hydroperiod
+
+```{r,echo=F,warning=FALSE,message=FALSE,out.width="100%"}
+tm_basemap(leaflet::providers$Esri.WorldImagery,alpha=0.9)+
+tm_shape(HPmean.WECBRR,name="WECBRR")+tm_fill("WECBRR",alpha=0.75,palette = HP.pal,breaks=HP.bks)+
+  tm_shape(HPmean.WFWOR,name="WFWOR")+tm_fill("FWO",alpha=0.75,palette = HP.pal,breaks=HP.bks)+
+  tm_shape(HPmean.ALTHR,name="ALTHR")+tm_fill("ALTHR",alpha=0.75,palette = HP.pal,breaks=HP.bks)+
+  tm_shape(HPmean.ALTHNF,name="ALTHNF")+tm_fill("ALTHNF",alpha=0.75,palette = HP.pal,breaks=HP.bks)+
+tm_shape(canals.clip,name="Canals")+tm_lines("blue",lwd=1)+
+  tm_shape(BCNP)+tm_borders(lty=2)+
+  tm_shape(trib.all,name="Tribal Lands")+tm_borders(lty=2,col="red")
+
+```
+
+***
+
+## Ponding Depth
+
+```{r,echo=F,warning=FALSE,message=FALSE,out.width="100%"}
+tm_basemap(leaflet::providers$Esri.WorldImagery,alpha=0.9)+
+tm_shape(PondDepth.mean.WECBRR,name="WCEBRR")+tm_fill("WECBRR",alpha=0.75,palette = pond.pal,breaks=pond.bks)+
+  tm_shape(PondDepth.mean.WFWOR,name="WFWOR")+tm_fill("FWO",alpha=0.75,palette = pond.pal,breaks=pond.bks)+
+  tm_shape(PondDepth.mean.ALTHR,name="ALTHR")+tm_fill("ALTHR",alpha=0.75,palette = pond.pal,breaks=pond.bks)+
+  tm_shape(PondDepth.mean.ALTHNF,name="ALTNHF")+tm_fill("ALTHNF",alpha=0.75,palette = pond.pal,breaks=pond.bks)+
+tm_shape(canals.clip,name="Canals")+tm_lines("blue",lwd=1)+
+  tm_shape(BCNP)+tm_borders(lty=2)+
+  tm_shape(trib.all,name="Tribal Lands")+tm_borders(lty=2,col="red")
+
+
+```
+
+***
